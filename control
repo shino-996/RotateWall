@@ -1,0 +1,9 @@
+Package: space.shino.rotatewall
+Name: RotateWall
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: An awesome MobileSubstrate tweak!
+Maintainer: shino
+Author: shino
+Section: Tweaks
