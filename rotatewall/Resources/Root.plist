@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>space.shino.rotatewall.preference</string>
+			<key>key</key>
+			<string>enable</string>
+			<key>label</key>
+			<string>开启</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>不同方向壁纸所在的相册</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>defaults</key>
+			<string>space.shino.rotatewall.preference</string>
+			<key>key</key>
+			<string>landscape</string>
+			<key>label</key>
+			<string>横屏</string>
+			<key>valuesDataSource</key>
+			<string>getAlbums</string>
+			<key>titlesDataSource</key>
+			<string>getAlbums</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>defaults</key>
+			<string>space.shino.rotatewall.preference</string>
+			<key>key</key>
+			<string>portrait</string>
+			<key>label</key>
+			<string>竖屏</string>
+			<key>valuesDataSource</key>
+			<string>getAlbums</string>
+			<key>titlesDataSource</key>
+			<string>getAlbums</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>RotateWall</string>
+</dict>
+</plist>

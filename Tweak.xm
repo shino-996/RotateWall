@@ -2,16 +2,20 @@
 #import <Photos/Photos.h>
 #import <objc/runtime.h>
 
+static BOOL SNEnable = NO;
 static BOOL SNIsLandscape = NO;
+static NSString *SNLandscape = @"";
+static NSString *SNPortrait = @"";
 
 static void SNChangeWallpaperFor(BOOL isLandscape) {
+    NSLog(@"%@, %@, %@", SNEnable ? @"YES": @"NO", SNLandscape, SNPortrait);
     PHFetchResult *collections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:NULL];
     PHAssetCollection *sclectedCollection = NULL;
     NSString *wallpaperCollections = @"";
     if(isLandscape) {
-        wallpaperCollections = @"WallpaperLandscape";
+        wallpaperCollections = SNLandscape;
     } else {
-        wallpaperCollections = @"WallpaperPortrait";
+        wallpaperCollections = SNPortrait;
     }
     for(int i = 0; i < collections.count; ++i) {
         PHAssetCollection *collection = (PHAssetCollection*)collections[i];
@@ -19,6 +23,9 @@ static void SNChangeWallpaperFor(BOOL isLandscape) {
             sclectedCollection = collection;
             break;
         }
+    }
+    if([sclectedCollection isEqual:NULL]) {
+        return;
     }
     PHFetchResult *assets = [PHAsset fetchAssetsInAssetCollection:sclectedCollection options:NULL];
     PHAsset *asset = (PHAsset*)[assets firstObject];
@@ -66,11 +73,21 @@ static void SNDeviceOrientationChangedCallback(CFNotificationCenterRef center, v
 %hook SpringBoard
 -(void)applicationDidFinishLaunching:(id)application {
     %orig;
-    CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
-                                    NULL,
-                                    SNDeviceOrientationChangedCallback,
-                                    (CFStringRef)UIDeviceOrientationDidChangeNotification,
-                                    NULL,
-                                    CFNotificationSuspensionBehaviorCoalesce);
+    if(SNEnable) {
+        CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
+                                        NULL,
+                                        SNDeviceOrientationChangedCallback,
+                                        (CFStringRef)UIDeviceOrientationDidChangeNotification,
+                                        NULL,
+                                        CFNotificationSuspensionBehaviorCoalesce);
+    }
 }
 %end
+
+%ctor {
+    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/space.shino.rotatewall.preference.plist"];
+    SNEnable = [settings[@"enable"] boolValue];
+    SNLandscape = (NSString*)settings[@"landscape"];
+    SNPortrait = (NSString*)settings[@"portrait"];
+    %init
+}
