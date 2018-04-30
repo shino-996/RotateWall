@@ -17,25 +17,25 @@ static void SNChangeWallpaperFor(BOOL isLandscape) {
         SNWallpaperView.alpha = 0;
     }];
     SNIsLandscape = isLandscape;
-    NSString *wallpaperCollections = @"";
+    NSString *albumName = @"";
     if(isLandscape) {
-        wallpaperCollections = SNLandscape;
+        albumName = SNLandscape;
     } else {
-        wallpaperCollections = SNPortrait;
+        albumName = SNPortrait;
     }
     PHFetchResult *collections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:NULL];
-    PHAssetCollection *sclectedCollection = NULL;
+    PHAssetCollection *album = NULL;
     for(int i = 0; i < collections.count; ++i) {
         PHAssetCollection *collection = (PHAssetCollection*)collections[i];
-        if([collection.localizedTitle  isEqual: wallpaperCollections]) {
-            sclectedCollection = collection;
+        if([collection.localizedTitle  isEqual: albumName]) {
+            album = collection;
             break;
         }
     }
-    if([sclectedCollection isEqual:NULL]) {
+    if([album isEqual:NULL]) {
         return;
     }
-    PHFetchResult *assets = [PHAsset fetchAssetsInAssetCollection:sclectedCollection options:NULL];
+    PHFetchResult *assets = [PHAsset fetchAssetsInAssetCollection:album options:NULL];
     if(assets.count < 1) {
         return;
     }
@@ -51,22 +51,18 @@ static void SNDeviceOrientationChangedCallback(CFNotificationCenterRef center, v
     UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
     switch (deviceOrientation) {
         case UIDeviceOrientationLandscapeLeft: {
-            NSLog(@"landscape left");
             SNChangeWallpaperFor(YES);
             break;
         }
         case UIDeviceOrientationLandscapeRight: {
-            NSLog(@"landscape right");
             SNChangeWallpaperFor(YES);
             break;
         }
         case UIDeviceOrientationPortrait: {
-            NSLog(@"portrait up");
             SNChangeWallpaperFor(NO);
             break;
         }
         case UIDeviceOrientationPortraitUpsideDown: {
-            NSLog(@"portrait down");
             SNChangeWallpaperFor(NO);
             break;
         }
