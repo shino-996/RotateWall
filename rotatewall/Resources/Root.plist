@@ -18,13 +18,13 @@
 			<key>key</key>
 			<string>enable</string>
 			<key>label</key>
-			<string>开启</string>
+			<string>enable</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>不同方向壁纸所在的相册</string>
+			<string>album of different orientations</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -36,7 +36,7 @@
 			<key>key</key>
 			<string>landscape</string>
 			<key>label</key>
-			<string>横屏</string>
+			<string>landscape</string>
 			<key>valuesDataSource</key>
 			<string>getAlbums</string>
 			<key>titlesDataSource</key>
@@ -52,7 +52,7 @@
 			<key>key</key>
 			<string>portrait</string>
 			<key>label</key>
-			<string>竖屏</string>
+			<string>portrait</string>
 			<key>valuesDataSource</key>
 			<string>getAlbums</string>
 			<key>titlesDataSource</key>
@@ -62,13 +62,13 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>重启SpringBoard后生效</string>
+			<string>respring to take effect</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>label</key>
-			<string>重启SpringBoard</string>
+			<string>respring</string>
 			<key>action</key>
 			<string>respring</string>
 		</dict>
