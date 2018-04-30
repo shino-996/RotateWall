@@ -58,6 +58,20 @@
 			<key>titlesDataSource</key>
 			<string>getAlbums</string>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>重启SpringBoard后生效</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>重启SpringBoard</string>
+			<key>action</key>
+			<string>respring</string>
+		</dict>
 	</array>
 	<key>title</key>
 	<string>RotateWall</string>

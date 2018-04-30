@@ -23,4 +23,7 @@
   return albumNameArray;
 }
 
+- (void)respring {
+  popen("killall -9 SpringBoard", "r");
+}
 @end

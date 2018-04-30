@@ -1,22 +1,30 @@
-#import <PhotoLibrary/PLStaticWallpaperImageViewController.h>
-#import <Photos/Photos.h>
-#import <objc/runtime.h>
+#import "RotateWall.h"
 
-static BOOL SNEnable = NO;
-static BOOL SNIsLandscape = NO;
-static NSString *SNLandscape = @"";
-static NSString *SNPortrait = @"";
+static void SNChangeWallpaperFor(UIImage *image) {
+    Class wallpaperClass = NSClassFromString(@"PLStaticWallpaperImageViewController");
+    id wallpaperViewController = [[wallpaperClass alloc] performSelector:NSSelectorFromString(@"initWithUIImage:") withObject:image];
+    [wallpaperViewController setValue:@(NO) forKeyPath:@"allowsEditing"];
+    [wallpaperViewController  setValue:@(YES) forKeyPath:@"saveWallpaperData"];
+    [wallpaperViewController performSelector:@selector(setImageAsHomeScreenAndLockScreenClicked:) withObject:nil];
+    [wallpaperViewController performSelector:@selector(release)];
+}
 
 static void SNChangeWallpaperFor(BOOL isLandscape) {
-    NSLog(@"%@, %@, %@", SNEnable ? @"YES": @"NO", SNLandscape, SNPortrait);
-    PHFetchResult *collections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:NULL];
-    PHAssetCollection *sclectedCollection = NULL;
+    if(SNIsLandscape == isLandscape) {
+        return;
+    }
+    [UIView animateWithDuration:1.0 animations:^{
+        SNWallpaperView.alpha = 0;
+    }];
+    SNIsLandscape = isLandscape;
     NSString *wallpaperCollections = @"";
     if(isLandscape) {
         wallpaperCollections = SNLandscape;
     } else {
         wallpaperCollections = SNPortrait;
     }
+    PHFetchResult *collections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:NULL];
+    PHAssetCollection *sclectedCollection = NULL;
     for(int i = 0; i < collections.count; ++i) {
         PHAssetCollection *collection = (PHAssetCollection*)collections[i];
         if([collection.localizedTitle  isEqual: wallpaperCollections]) {
@@ -31,12 +39,7 @@ static void SNChangeWallpaperFor(BOOL isLandscape) {
     PHAsset *asset = (PHAsset*)[assets firstObject];
     [[PHImageManager defaultManager] requestImageDataForAsset:asset options:NULL resultHandler:^(NSData *data, NSString *string, UIImageOrientation orientation, NSDictionary *info) {
         UIImage *image = [[UIImage alloc] initWithData:data];
-        Class wallpaperClass = NSClassFromString(@"PLStaticWallpaperImageViewController");
-        id wallpaperViewController = [[wallpaperClass alloc] performSelector:NSSelectorFromString(@"initWithUIImage:") withObject:image];
-        [wallpaperViewController setValue:@(NO) forKeyPath:@"allowsEditing"];
-        [wallpaperViewController  setValue:@(YES) forKeyPath:@"saveWallpaperData"];
-        [wallpaperViewController performSelector:@selector(setImageAsHomeScreenAndLockScreenClicked:) withObject:nil];
-        [wallpaperViewController performSelector:@selector(release)];
+        SNChangeWallpaperFor(image);
     }];
 }
 
@@ -44,27 +47,17 @@ static void SNDeviceOrientationChangedCallback(CFNotificationCenterRef center, v
     UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
     switch (deviceOrientation) {
         case UIDeviceOrientationLandscapeLeft:
-            NSLog(@"Screen Left");
-        case UIDeviceOrientationLandscapeRight: {
-            NSLog(@"Screen Right");
-            if(SNIsLandscape == YES) {
-                break;
-            }
-            SNIsLandscape = YES;
             SNChangeWallpaperFor(YES);
             break;
-        }
+        case UIDeviceOrientationLandscapeRight:
+            SNChangeWallpaperFor(YES);
+            break;
         case UIDeviceOrientationPortrait:
-            NSLog(@"Screen Portrait");
-        case UIDeviceOrientationPortraitUpsideDown: {
-            NSLog(@"Screen UnPortrait");
-            if(SNIsLandscape == NO) {
-                break;
-            }
-            SNIsLandscape = NO;
             SNChangeWallpaperFor(NO);
             break;
-        }
+        case UIDeviceOrientationPortraitUpsideDown:
+            SNChangeWallpaperFor(NO);
+            break;
         default:
             break;
     }
@@ -81,6 +74,18 @@ static void SNDeviceOrientationChangedCallback(CFNotificationCenterRef center, v
                                         NULL,
                                         CFNotificationSuspensionBehaviorCoalesce);
     }
+}
+%end
+
+%hook SBFStaticWallpaperView
+-(id)initWithFrame:(CGRect)arg1 wallpaperImage:(id)arg2 variant:(long long)arg3 options:(NSUInteger)arg4 {
+    SBFStaticWallpaperView *view = %orig;
+    view.alpha = 0;
+    [UIView animateWithDuration:0.3 animations:^{
+        view.alpha = 1;
+    }];
+    SNWallpaperView = view;
+    return view;
 }
 %end
 
