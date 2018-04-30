@@ -13,7 +13,7 @@ static void SNChangeWallpaperFor(BOOL isLandscape) {
     if(SNIsLandscape == isLandscape) {
         return;
     }
-    [UIView animateWithDuration:1.0 animations:^{
+    [UIView animateWithDuration:0.3 animations:^{
         SNWallpaperView.alpha = 0;
     }];
     SNIsLandscape = isLandscape;
@@ -70,7 +70,7 @@ static void SNDeviceOrientationChangedCallback(CFNotificationCenterRef center, v
         CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
                                         NULL,
                                         SNDeviceOrientationChangedCallback,
-                                        (CFStringRef)UIDeviceOrientationDidChangeNotification,
+                                        (CFStringRef)UIApplicationWillChangeStatusBarOrientationNotification,
                                         NULL,
                                         CFNotificationSuspensionBehaviorCoalesce);
     }
@@ -80,7 +80,7 @@ static void SNDeviceOrientationChangedCallback(CFNotificationCenterRef center, v
 %hook SBFStaticWallpaperView
 -(id)initWithFrame:(CGRect)arg1 wallpaperImage:(id)arg2 variant:(long long)arg3 options:(NSUInteger)arg4 {
     SBFStaticWallpaperView *view = %orig;
-    view.alpha = 0;
+    view.alpha = 0.2;
     [UIView animateWithDuration:0.3 animations:^{
         view.alpha = 1;
     }];

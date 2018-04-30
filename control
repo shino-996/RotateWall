@@ -1,9 +1,9 @@
 Package: space.shino.rotatewall
 Name: RotateWall
 Depends: mobilesubstrate
-Version: 0.0.1
+Version: 0.1.0
 Architecture: iphoneos-arm
-Description: An awesome MobileSubstrate tweak!
-Maintainer: shino
+Description: Change the wallpaper when devie rotate.
+Maintainer: shino <shino@shino.space>
 Author: shino
 Section: Tweaks
