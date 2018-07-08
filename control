@@ -1,7 +1,7 @@
 Package: space.shino.rotatewall
 Name: RotateWall
 Depends: mobilesubstrate
-Version: 1.0.0
+Version: 1.0.1
 Architecture: iphoneos-arm
 Description: Change the wallpaper when devie rotate.
 Maintainer: shino <shino.wzn@shino.space>

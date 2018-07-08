@@ -103,7 +103,7 @@ static void SNDeviceOrientationChangedCallback(CFNotificationCenterRef center, v
 
 %group iOS9_plus
 %hook SBFStaticWallpaperView
-- (id)initWithFrame:(struct CGRect)arg1 wallpaperImage:(id)arg2 cacheGroup:(id)arg3 variant:(long long)arg4 options:(unsigned long long)arg5 {
+- (id)initWithFrame:(struct CGRect)arg1 wallpaperImage:(id)arg2 cacheGroup:(id)arg3 variant:(long long)arg4 options:(unsigned long long)arg5 wallpaperSettingsProvider:(id)arg6{
     SBFStaticWallpaperView *view = %orig;
     view.alpha = 0.2;
     [UIView animateWithDuration:0.3 animations:^{
