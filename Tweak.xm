@@ -5,16 +5,17 @@ static void SNChangeWallpaperFor(UIImage *image) {
     id wallpaperViewController = [[wallpaperClass alloc] performSelector:NSSelectorFromString(@"initWithUIImage:") withObject:image];
     [wallpaperViewController setValue:@(NO) forKeyPath:@"allowsEditing"];
     [wallpaperViewController  setValue:@(YES) forKeyPath:@"saveWallpaperData"];
+    [wallpaperViewController performSelector:@selector(setImageAsHomeScreenAndLockScreenClicked:) withObject:nil];
+    [wallpaperViewController performSelector:@selector(release)];
 
-    // animate start
+    // 覆盖一个黑色 UIWindow 用来做动画
     UIWindow *window = [[UIWindow alloc] init];
     window.frame =  [UIScreen mainScreen].bounds;
     window.windowLevel = 2005;
+    [window setBackgroundColor: [UIColor blackColor]];
     window.alpha = 0;
     [window makeKeyAndVisible];
-    [window setBackgroundColor: [UIColor blackColor]];
-    [wallpaperViewController performSelector:@selector(setImageAsHomeScreenAndLockScreenClicked:) withObject:nil];
-    [wallpaperViewController performSelector:@selector(release)];
+    // 因为就俩动画, 就直接嵌套起来了
     [UIView animateWithDuration:0.3
         animations:^{
             window.alpha = 1;
@@ -59,6 +60,8 @@ static void SNChangeWallpaperFor(BOOL isLandscape) {
     }
     int index = arc4random() % assets.count;
     PHAsset *asset = (PHAsset*)assets[index];
+
+    // 照片是异步获取的, 本来也没几行, 嵌套调用了
     [[PHImageManager defaultManager] requestImageDataForAsset:asset options:NULL resultHandler:^(NSData *data, NSString *string, UIImageOrientation orientation, NSDictionary *info) {
         UIImage *image = [[UIImage alloc] initWithData:data];
         SNChangeWallpaperFor(image);
@@ -93,6 +96,7 @@ static void SNDeviceOrientationChangedCallback(CFNotificationCenterRef center, v
 -(void)applicationDidFinishLaunching:(id)application {
     %orig;
     if(SNEnable) {
+        // 为了使动画更自然, 监听将要开始旋转的通知
         CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
                                         NULL,
                                         SNDeviceOrientationChangedCallback,
