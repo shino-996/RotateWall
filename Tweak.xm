@@ -5,17 +5,35 @@ static void SNChangeWallpaperFor(UIImage *image) {
     id wallpaperViewController = [[wallpaperClass alloc] performSelector:NSSelectorFromString(@"initWithUIImage:") withObject:image];
     [wallpaperViewController setValue:@(NO) forKeyPath:@"allowsEditing"];
     [wallpaperViewController  setValue:@(YES) forKeyPath:@"saveWallpaperData"];
+
+    // animate start
+    UIWindow *window = [[UIWindow alloc] init];
+    window.frame =  [UIScreen mainScreen].bounds;
+    window.windowLevel = 2005;
+    window.alpha = 0;
+    [window makeKeyAndVisible];
+    [window setBackgroundColor: [UIColor blackColor]];
     [wallpaperViewController performSelector:@selector(setImageAsHomeScreenAndLockScreenClicked:) withObject:nil];
     [wallpaperViewController performSelector:@selector(release)];
+    [UIView animateWithDuration:0.3
+        animations:^{
+            window.alpha = 1;
+        }
+        completion:^(BOOL finished){
+            [UIView animateWithDuration:0.3
+                animations:^{
+                    window.alpha = 0;
+                }
+                completion:^(BOOL finished){
+                    [window release];
+                }];
+        }];
 }
 
 static void SNChangeWallpaperFor(BOOL isLandscape) {
     if(SNIsLandscape == isLandscape) {
         return;
     }
-    [UIView animateWithDuration:0.3 animations:^{
-        SNWallpaperView.alpha = 0;
-    }];
     SNIsLandscape = isLandscape;
     NSString *albumName = @"";
     if(isLandscape) {
@@ -71,7 +89,6 @@ static void SNDeviceOrientationChangedCallback(CFNotificationCenterRef center, v
     }
 }
 
-%group common
 %hook SpringBoard
 -(void)applicationDidFinishLaunching:(id)application {
     %orig;
@@ -85,35 +102,6 @@ static void SNDeviceOrientationChangedCallback(CFNotificationCenterRef center, v
     }
 }
 %end
-%end //common group
-
-%group iOS9
-%hook SBFStaticWallpaperView
--(id)initWithFrame:(CGRect)arg1 wallpaperImage:(id)arg2 variant:(long long)arg3 options:(NSUInteger)arg4 {
-    SBFStaticWallpaperView *view = %orig;
-    view.alpha = 0.2;
-    [UIView animateWithDuration:0.3 animations:^{
-        view.alpha = 1;
-    }];
-    SNWallpaperView = view;
-    return view;
-}
-%end
-%end //iOS9 group
-
-%group iOS9_plus
-%hook SBFStaticWallpaperView
-- (id)initWithFrame:(struct CGRect)arg1 wallpaperImage:(id)arg2 cacheGroup:(id)arg3 variant:(long long)arg4 options:(unsigned long long)arg5 wallpaperSettingsProvider:(id)arg6{
-    SBFStaticWallpaperView *view = %orig;
-    view.alpha = 0.2;
-    [UIView animateWithDuration:0.3 animations:^{
-        view.alpha = 1;
-    }];
-    SNWallpaperView = view;
-    return view;
-}
-%end
-%end //iOS9_plus group
 
 %ctor {
     NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/space.shino.rotatewall.preference.plist"];
@@ -121,10 +109,4 @@ static void SNDeviceOrientationChangedCallback(CFNotificationCenterRef center, v
     SNLandscape = (NSString*)settings[@"landscape"];
     SNPortrait = (NSString*)settings[@"portrait"];
     %init;
-    %init(common);
-    if(kCFCoreFoundationVersionNumber >= 1300) {
-        %init(iOS9_plus);
-    } else {
-        %init(iOS9);
-    }
 }
