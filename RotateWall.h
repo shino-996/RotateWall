@@ -1,12 +1,12 @@
-#import <PhotoLibrary/PLStaticWallpaperImageViewController.h>
-#import <Photos/Photos.h>
-#import <objc/runtime.h>
+#import <Foundation/Foundation.h>
 
-@interface SBFStaticWallpaperView : UIView
-@end
+extern BOOL RTWEnable;
+extern BOOL RTWIsLandscape;
+extern NSString *RTWLandscapeAlbumName;
+extern NSString *RTWPortraitAlbumName;
 
-static BOOL SNEnable = NO;
-static BOOL SNIsLandscape = NO;
-static NSString *SNLandscape = @"";
-static NSString *SNPortrait = @"";
-static SBFStaticWallpaperView *SNWallpaperView =nil;
+void rtw_orientationChanged(CFNotificationCenterRef center,
+                                                      void *observer,
+                                               CFStringRef name,
+                                                const void *object,
+                                           CFDictionaryRef userInfo);

@@ -1,7 +1,7 @@
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = RotateWall
-RotateWall_FILES = SNRootListController.m
+RotateWall_FILES = RTWRootListController.m
 RotateWall_INSTALL_PATH = /Library/PreferenceBundles
 RotateWall_FRAMEWORKS = UIKit
 RotateWall_PRIVATE_FRAMEWORKS = Preferences

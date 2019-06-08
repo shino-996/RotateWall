@@ -1,9 +1,16 @@
-THEOS_DEVICE_IP = 192.168.255.251
+THEOS_DEVICE_IP = localhost
+THEOS_DEVICE_PORT = 10000
+
+export ARCHS = arm64 arm64e
+TARGET = iphone:12.1.2:10
 
 include $(THEOS)/makefiles/common.mk
+RotateWall_PRIVATE_FRAMEWORKS = Photolibrary
+
+RotateWall_CFLAGS = -fobjc-arc
 
 TWEAK_NAME = RotateWall
-RotateWall_FILES = Tweak.xm
+RotateWall_FILES = Tweak.xm RotateWall.mm
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
