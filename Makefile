@@ -2,12 +2,12 @@ THEOS_DEVICE_IP = localhost
 THEOS_DEVICE_PORT = 10000
 
 export ARCHS = arm64 arm64e
-TARGET = iphone:12.1.2:10
+TARGET = iphone:12.4
 
 include $(THEOS)/makefiles/common.mk
-RotateWall_PRIVATE_FRAMEWORKS = Photolibrary
 
 RotateWall_CFLAGS = -fobjc-arc
+CCFLAGS += -std=c++11
 
 TWEAK_NAME = RotateWall
 RotateWall_FILES = Tweak.xm RotateWall.mm

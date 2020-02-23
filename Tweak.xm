@@ -1,10 +1,12 @@
 #import "RotateWall.h"
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 static NSString * const RTWPreferencePath = @"/User/Library/Preferences/space.shino.rotatewall.preference.plist";
 static NSString * const RTWPreferenceEnableKey = @"enable";
 static NSString * const RTWPreferenceLandscapeKey = @"landscape";
 static NSString * const RTWPreferencePortraitKey = @"portrait";
+SBFStaticWallpaperImageView *RTWImageView;
 
 %hook SpringBoard
 - (void)applicationDidFinishLaunching:(id)application
@@ -48,5 +50,14 @@ static NSString * const RTWPreferencePortraitKey = @"portrait";
     } else {
         return %orig;
     }
+}
+%end
+
+%hook SBFStaticWallpaperImageView
+- (instancetype)initWithImage:(UIImage *)image
+{
+    RTWImageView = %orig(image);
+    RTWImageView.contentMode = UIViewContentModeScaleAspectFit;
+    return RTWImageView;
 }
 %end
