@@ -2,6 +2,7 @@
 
 #import <Photos/Photos.h>
 #import <objc/runtime.h>
+#import <os/log.h>
 
 BOOL RTWEnable = NO;
 BOOL RTWIsLandscape = NO;
@@ -33,18 +34,13 @@ static void rtw_changeWallpaperWithOrientation(BOOL isLandscape) {
     PHAsset *asset = (PHAsset*)assets[index];
 
     // 照片是异步获取的, 本来也没几行, 嵌套调用了
-    [[PHImageManager defaultManager] requestImageDataForAsset:asset options:nil resultHandler:^(NSData *data, NSString *string, UIImageOrientation orientation, NSDictionary *info) {
+    [[PHImageManager defaultManager] requestImageDataAndOrientationForAsset:asset options:nil resultHandler:^(NSData *data, NSString *dataUTI, CGImagePropertyOrientation orientation, NSDictionary *info) {
         UIImage *image = [[UIImage alloc] initWithData:data];
         RTWImageView.image = image;
     }];
 }
 
-void rtw_orientationChanged(CFNotificationCenterRef center,
-                                               void *observer,
-                                        CFStringRef name,
-                                         const void *object,
-                                    CFDictionaryRef userInfo) {
-    UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
+void rtw_orientationChanged(UIDeviceOrientation deviceOrientation) {
     switch (deviceOrientation) {
         case UIDeviceOrientationLandscapeLeft: {
             rtw_changeWallpaperWithOrientation(YES);

@@ -2,7 +2,7 @@ THEOS_DEVICE_IP = localhost
 THEOS_DEVICE_PORT = 10000
 
 export ARCHS = arm64 arm64e
-TARGET = iphone:12.4
+TARGET = iphone:13.5
 
 include $(THEOS)/makefiles/common.mk
 

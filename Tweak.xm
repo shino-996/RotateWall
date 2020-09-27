@@ -1,6 +1,7 @@
 #import "RotateWall.h"
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <os/log.h>
 
 static NSString * const RTWPreferencePath = @"/User/Library/Preferences/space.shino.rotatewall.preference.plist";
 static NSString * const RTWPreferenceEnableKey = @"enable";
@@ -9,27 +10,16 @@ static NSString * const RTWPreferencePortraitKey = @"portrait";
 SBFStaticWallpaperImageView *RTWImageView;
 
 %hook SpringBoard
-- (void)applicationDidFinishLaunching:(id)application
+- (void)noteInterfaceOrientationChanged:(UIDeviceOrientation)orientation
+                               duration:(double)duration
+                 updateMirroredDisplays:(BOOL)update
+                                  force:(BOOL)force
+                             logMessage:(id)message
 {
-    %orig;
-    if(!RTWEnable) {
-        return;
+    if (RTWEnable) {
+        rtw_orientationChanged(orientation);
     }
-    // 为了使动画更自然, 监听将要开始旋转的通知
-    CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
-                                    NULL,
-                                    rtw_orientationChanged,
-                                    (CFStringRef)UIApplicationWillChangeStatusBarOrientationNotification,
-                                    NULL,
-                                    CFNotificationSuspensionBehaviorCoalesce);
-
-    // 亮屏通知
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),
-                                    NULL,
-                                    rtw_orientationChanged,
-                                    CFSTR("com.apple.springboard.hasBlankedScreen"),
-                                    NULL,
-                                    CFNotificationSuspensionBehaviorCoalesce);
+    %orig;
 }
 %end
 

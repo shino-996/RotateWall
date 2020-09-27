@@ -10,8 +10,4 @@ extern NSString *RTWPortraitAlbumName;
 @end
 extern SBFStaticWallpaperImageView *RTWImageView;
 
-void rtw_orientationChanged(CFNotificationCenterRef center,
-                                                      void *observer,
-                                               CFStringRef name,
-                                                const void *object,
-                                           CFDictionaryRef userInfo);
+void rtw_orientationChanged(UIDeviceOrientation deviceOrientation);
