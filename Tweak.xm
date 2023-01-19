@@ -1,9 +1,7 @@
 #import "RotateWall.h"
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <os/log.h>
 
-static NSString * const RTWPreferencePath = @"/User/Library/Preferences/space.shino.rotatewall.preference.plist";
+static NSString * const RTWPreferencePath = @"/var/mobile/Library/Preferences/space.shino.rotatewall.preference.plist";
 static NSString * const RTWPreferenceEnableKey = @"enable";
 static NSString * const RTWPreferenceLandscapeKey = @"landscape";
 static NSString * const RTWPreferencePortraitKey = @"portrait";
